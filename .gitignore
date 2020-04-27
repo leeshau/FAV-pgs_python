@@ -1,0 +1,9 @@
+predzapisove-akce.txt
+predzapisove-akce.xml
+predzapisove-akce-test.txt
+predzapisove-akce-test.xml
+vysledky-predzapisove-akce-test.txt
+venv/Lib
+venv/Include
+venv/__pycache__
+venv/Scripts
