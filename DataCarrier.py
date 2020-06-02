@@ -1,5 +1,5 @@
 def contains_student(subject_shortcut, student):
-    """Checks if the current subject has the student in parameter signed in."""
+    """Checks if the student is signed in the current subject. Reading from the_map."""
     if subject_shortcut.__contains__('Cv'):
         for action_id in subject_shortcut['Cv']:
             if student in subject_shortcut['Cv'][action_id]:
@@ -17,9 +17,6 @@ class DataCarrier:
         self.all_actions = 0
         self.delete = 0
         self.sign_in = 0
-        self.students = 0
-        self.subjects = 0
-        self.workplaces = 0
         self.ws_list = {}
         self.student_list = {}
 
@@ -33,11 +30,8 @@ class DataCarrier:
         student = line[0]
         subject_ws_list = str(subject) + " " + str(zsls)
         skip = False
-        if str(workplace) == 'KFY':
-            a = 1
         if not self.the_map.__contains__(workplace):
             self.the_map[workplace] = {}
-            self.workplaces += 1
             skip = True  # if map doesn't contain this workplace it won't contain the zsls, subject and so on, so we don't need to check that
 
         if skip or not self.the_map[workplace].__contains__(zsls):
@@ -46,7 +40,6 @@ class DataCarrier:
 
         if skip or not self.the_map[workplace][zsls].__contains__(subject):
             self.the_map[workplace][zsls][subject] = {}
-            self.subjects += 1
             skip = True
 
         if skip or not self.the_map[workplace][zsls][subject].__contains__(prcv):
@@ -99,7 +92,7 @@ class DataCarrier:
                 if self.student_list[student] == 0:
                     del self.student_list[student]
         else:
-            print("Student " + student + " jde do mínusu v delete. Končím.")
+            print("Student " + student + " jde do mínusu v delete. \nChyba I/O. Končím.")
             exit(3)
 
         if self.ws_list.__contains__(workplace):
