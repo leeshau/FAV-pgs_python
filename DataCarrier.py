@@ -1,12 +1,12 @@
 def contains_student(subject_shortcut, student):
     """Checks if the current subject has the student in parameter signed in."""
     if subject_shortcut.__contains__('Cv'):
-        for action_id_shortcut in subject_shortcut['Cv']:
-            if action_id_shortcut.__contains__(student):
+        for action_id in subject_shortcut['Cv']:
+            if student in subject_shortcut['Cv'][action_id]:
                 return True
     if subject_shortcut.__contains__('Př'):
-        for action_id_shortcut in subject_shortcut['Př']:
-            if action_id_shortcut.__contains__(student):
+        for action_id in subject_shortcut['Př']:
+            if student in subject_shortcut['Př'][action_id]:
                 return True
     return False
 
@@ -31,8 +31,10 @@ class DataCarrier:
         prcv = line[5]
         action_id = line[2]
         student = line[0]
-
+        subject_ws_list = str(subject) + " " + str(zsls)
         skip = False
+        if str(workplace) == 'KFY':
+            a = 1
         if not self.the_map.__contains__(workplace):
             self.the_map[workplace] = {}
             self.workplaces += 1
@@ -56,43 +58,48 @@ class DataCarrier:
 
         if skip or not self.the_map[workplace][zsls][subject][prcv][action_id].__contains__(student):
             """Here the student is signed in."""
+            contained_student_before_adding = contains_student(self.the_map[workplace][zsls][subject], student)
             self.the_map[workplace][zsls][subject][prcv][action_id][student] = ""
 
             if not self.ws_list.__contains__(workplace):
                 self.ws_list[workplace] = {}
-            if not self.ws_list[workplace].__contains__(subject):
-                self.ws_list[workplace][subject] = 1
-            elif not contains_student(self.the_map[workplace][zsls][subject], student):
-                self.ws_list[workplace][subject] += 1
+            if not self.ws_list[workplace].__contains__(subject_ws_list):
+                self.ws_list[workplace][subject_ws_list] = 1
+            elif not contained_student_before_adding:
+                self.ws_list[workplace][subject_ws_list] += 1
             """Increasing student's subject count by one."""
             if self.student_list.__contains__(student):
                 self.student_list[student] += 1
             else:
                 self.student_list[student] = 1
         else:
-            print("The student " + str(student) + " is trying to sing in twice to the action : " + str(action_id) + " .")
+            print("Student " + str(student) + " se pokouší dostat na akci " + str(action_id) + " podruhé. Zamítnuto.")
 
     def remove_line(self, line):
-        """Removes data from the_map due to the remove line in the parameters."""
+        """Removes data from the_map due to the remove line passed in the parameter."""
         workplace = line[3]
         zsls = line[6]
         subject = line[4]
         prcv = line[5]
         action_id = line[2]
         student = line[0]
+        subject_ws_list = str(subject) + " " + str(zsls)
         if self.the_map[workplace][zsls][subject][prcv][action_id].__contains__(student):
             del self.the_map[workplace][zsls][subject][prcv][action_id][student]
-            if not contains_student(self.the_map[workplace][zsls][subject], student) and self.ws_list.__contains__(
-                    workplace) and self.ws_list[workplace].__contains__(subject):
-                self.ws_list[workplace][subject] -= 1
-                if self.ws_list[workplace][subject] == 0:
-                    del self.ws_list[workplace][subject]
+            """Updating ws_list"""
+            if not contains_student(self.the_map[workplace][zsls][subject], student) \
+                    and self.ws_list.__contains__(workplace) \
+                    and self.ws_list[workplace].__contains__(subject_ws_list):
+                self.ws_list[workplace][subject_ws_list] -= 1
+                if self.ws_list[workplace][subject_ws_list] == 0:
+                    del self.ws_list[workplace][subject_ws_list]
+            """Updating student_list"""
             if self.student_list.__contains__(student):
                 self.student_list[student] -= 1
                 if self.student_list[student] == 0:
                     del self.student_list[student]
         else:
-            print("Student " + student + " jde do minusu v delete.")
+            print("Student " + student + " jde do mínusu v delete. Končím.")
             exit(3)
 
         if self.ws_list.__contains__(workplace):
