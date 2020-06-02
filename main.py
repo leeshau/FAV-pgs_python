@@ -1,7 +1,7 @@
-# TheMap -> workplace -> ZS/LS -> subject -> Pr/Cv -> action_id -> student
 import sys
 import filework
 
+print("Zdravím. Program spuštěn.")
 if filework.check_input() == ".txt":
     import txt_parser
     parser = txt_parser.TXT_parser()
@@ -10,7 +10,7 @@ else:
     parser = xml_parser.XML_parser()
 
 f = open(sys.argv[2], 'r')
-# data = DataCarrier.DataCarrier()
 parser.parse_file(f)
 f.close()
-filework.export_file(parser.data)
+filework.export_file(parser.data, sys.argv[4])
+print("\nVše proběhlo v pořádku. Export hotový. \n\nMějte se.")

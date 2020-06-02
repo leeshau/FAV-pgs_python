@@ -1,7 +1,6 @@
 import DataCarrier
 
 
-# TheMap -> workplace -> ZS/LS -> subject -> Pr/Cv -> action_id -> student
 class TXT_parser:
     def __init__(self):
         self.data = DataCarrier.DataCarrier()
@@ -9,7 +8,7 @@ class TXT_parser:
     def parse_file(self, f):
         for i in f:
             line = i.split(";")
-            if len(line) < 1:
+            if len(line) < 2:
                 continue
             self.data.all_actions += 1
             if line[1] == "insert":

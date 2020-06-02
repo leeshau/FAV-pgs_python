@@ -2,7 +2,6 @@ from xml.sax import handler, make_parser
 import DataCarrier
 
 
-# TheMap -> workplace -> ZS/LS -> subject -> Pr/Cv -> action_id -> student
 class XML_parser(handler.ContentHandler):
 
     def __init__(self):

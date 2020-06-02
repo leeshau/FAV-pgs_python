@@ -13,12 +13,15 @@ def check_input():
         if i == 2:
             result = end
         if end != ".txt" and end != ".xml":
-            print("Špatné koncovky input souborů, musí být buď '.txt' nebo '.xml'. Končím.")
+            if i == 2:
+                print("Špatné koncovky input souboru, musí být buď '.txt' nebo '.xml'. Končím.")
+            else:
+                print("Špatné koncovky output souboru, musí být '.txt'. Končím.")
             exit(2)
     return result
 
 
-def export_file(data):
+def export_file(data, filename):
     """
     Creates ws_final (workplace => number_of_studentsubjects) from ws_list.
     Then it exports the results to a file.
@@ -32,13 +35,18 @@ def export_file(data):
         ws_final[str(workplace)] = int(res)
         final_subjects += res
 
-    print("Počet všech předzápisových akcí: " + str(data.all_actions))
-    print("Počet zrušených akcí (delete): " + str(data.delete))
-    print("Počet skutečně zapsaných akcí: " + str(data.sign_in))
-    print("Počet studentů: " + str(len(data.student_list)))
-    print("Počet předmětů: " + str(final_subjects))
-    print("Počet pracovišť: " + str(len(data.ws_list)))
-    i = 1
-    for workplace, ws_count in sorted(ws_final.items(), key=lambda x: (x[1], x[0])):
-        print(str(i) + ". " + str(workplace) + ": " + str(ws_count))
-        i += 1
+    try:
+        out = open(filename, "w+")
+        out.write("Počet všech předzápisových akcí: " + str(data.all_actions) + "\n")
+        out.write("Počet zrušených akcí (delete): " + str(data.delete) + "\n")
+        out.write("Počet skutečně zapsaných akcí: " + str(data.sign_in) + "\n")
+        out.write("Počet studentů: " + str(len(data.student_list)) + "\n")
+        out.write("Počet předmětů: " + str(final_subjects) + "\n")
+        out.write("Počet pracovišť: " + str(len(data.ws_list)) + "\n")
+        i = 1
+        for workplace, ws_count in sorted(ws_final.items(), key=lambda x: (x[1], x[0])):
+            out.write(str(i) + ". " + str(workplace) + ": " + str(ws_count) + "\n")
+            i += 1
+    except Exception:
+        print("Chyba při zapisování do souboru. Končím.")
+        sys.exit(4)
